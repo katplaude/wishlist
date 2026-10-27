@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqgimu9",
+    "name": "Rhode glazing milk",
+    "store": "Rhode",
+    "price": "42€",
+    "link": "https://www.rhodeskin.com/en-de/products/glazing-milk?srsltid=AYCX9vI6mGmP1m8Xpu7LwIiAIHkjN7IByyfFoAvHYW2X7MfbmAfHzLCH&variant=44178822004974",
+    "image": "https://www.rhodeskin.com/cdn/shop/files/glazing-milk-hero-desktop-final_1_2480x.jpg?v=1745627488",
+    "category": "cosmetics",
+    "note": "to make my skin glowy",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqgf8q2",
     "name": "Alento perfume",
     "store": "L'objet",
