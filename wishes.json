@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqgn7tz",
+    "name": "Hello Klean Shower Head",
+    "store": "Hello Klean",
+    "price": "72€",
+    "link": "https://helloklean.com/en-eu/products/hello-klean-shower-head?variant=41819538325609&tw_source=google&tw_adid=730164128321&tw_campaign=22156417369&tw_kwdid=pla-293946777986&gad_source=1&gad_campaignid=22156417369&gbraid=0AAAAACfMvN8BmVrPPPrt4J6Wmtcc1lTtf&gclid=CjwKCAjwl4HXBhAjEiwAHlpWhAmnSyM9OQw2b4r31W_aXtBhqZl-tuvmodNVjj-5-HRYVhpW8vQOORoCh9oQAvD_BwE",
+    "image": "https://helloklean.com/cdn/shop/files/Shower_Head_Chrome_Grain_4x5_091f9518-e21f-448c-ba01-6d22a2457e66.jpg?v=1760014527",
+    "category": "house",
+    "note": "berlins water is hard",
+    "dream": true,
+    "got": false
+  },
+  {
     "id": "wmvqgimu9",
     "name": "Rhode glazing milk",
     "store": "Rhode",
