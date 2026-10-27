@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqheuon",
+    "name": "Air purifier",
+    "store": "Mediamarkt",
+    "price": "130€",
+    "link": "https://www.mediamarkt.de/de/product/_philips-ac092010-pureprotect-mini-900-series-luftreiniger-arktisweiss-21-watt-raumgrosse-65-m-hepa-filter-vorfilter-2948714.html?storeId=&utm_source=google&utm_medium=v2-sho&utm_campaign=de|mms|rt|v2-sho|pfm|spm|GmbH-MM-Philips-DA-Always-On-2026|1602199|d2c|NA|B000AMYA&utm_term=&utm_content=B000AMYA-TCID21854003910-TAID198110203584&gclsrc=aw.ds&gad_source=1&gad_campaignid=21854003910&gbraid=0AAAAADh5KajeOW0o765lP4hNw6yrH2bCL&gclid=CjwKCAjwl4HXBhAjEiwAHlpWhP_Smenu2JroB_q0dLp3Lk9ZDCmruopgzW_MMhwEfjD3iGSELumHyRoCUAwQAvD_BwE",
+    "image": "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_145135890?x=697&y=523&format=webp&quality=60&sp=yes&strip=yes&trim=yes&ex=697&ey=523&align=center&resizesource&unsharp=0.5x0.5",
+    "category": "house",
+    "note": "can be any",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqhc2gg",
     "name": "Smart Garden",
     "store": "Eu Clickandgrow",
