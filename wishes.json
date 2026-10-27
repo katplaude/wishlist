@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqgzsle",
+    "name": "Jaded london dress",
+    "store": "Jadedldn",
+    "price": "100€",
+    "link": "https://jadedldn.com/en-de/products/vivienne-lace-fringe-dress",
+    "image": "https://assets.jadedldn.com/image/upload/e_sharpen:70,w_1400,c_limit/shopi///cdn/shop/files/JWD4661_3.jpg",
+    "category": "fashion",
+    "note": "any jaded london dress they are so pretty",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqguy6v",
     "name": "Terry towel",
     "store": "Teklafabrics",
