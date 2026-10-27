@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqguy6v",
+    "name": "Terry towel",
+    "store": "Teklafabrics",
+    "price": "80€",
+    "link": "https://teklafabrics.com/product/terry-towel-red-and-rose",
+    "image": "https://tekla.b-cdn.net/2v0SLwlTiqdrqpUGpNeXUi/65c2df1cd9e7747375098a7e84d741e6/Tekla_Terry_Towel_Red___Rose_1_FEATURE.jpg?w=3840&q=75&fm=avif",
+    "category": "house",
+    "note": "can be any towel but good quality and pretty",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqgrunb",
     "name": "Water purifier",
     "store": "westwing.de",
