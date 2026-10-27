@@ -10,17 +10,5 @@
     "note": "Black, the small one.",
     "dream": false,
     "got": false
-  },
-  {
-    "id": "w3",
-    "name": "Silver hoops",
-    "store": "Etsy",
-    "price": "€35",
-    "link": "https://www.etsy.com",
-    "image": "",
-    "category": "jewellery",
-    "note": "Medium size, not too chunky.",
-    "dream": false,
-    "got": true
   }
 ]
