@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "wmvqg7cew",
+    "name": "Cashmere sweater",
+    "store": "Uniqlo",
+    "price": "89,9",
+    "link": "https://www.uniqlo.com/de/en/products/E465734-000/00?colorDisplayCode=03&sizeDisplayCode=003",
+    "image": "https://image.uniqlo.com/UQ/ST3/eu/imagesgoods/465734/item/eugoods_03_465734_3x4.jpg?width=400",
+    "category": "fashion",
+    "note": "to stay warm this winter",
+    "dream": false,
+    "got": false
+  }
+]
