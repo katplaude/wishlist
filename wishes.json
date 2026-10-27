@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqha478",
+    "name": "Sunrise alarm",
+    "store": "Hatch",
+    "price": "169€",
+    "link": "https://www.hatch.co/restore/putty",
+    "image": "https://www.hatch.co/_next/image?url=https%3A%2F%2Fwww.datocms-assets.com%2F98401%2F1769721785-restore-3-carousel-putty-1-v2.webp&w=1920&q=100",
+    "category": "house",
+    "note": "can be any sunrise alarm",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqh71gt",
     "name": "Coat",
     "store": "Arket",
