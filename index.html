@@ -433,54 +433,57 @@ function parseHtml(html, url) {
   return { name: name.slice(0, 120), store: (brand || site || "").slice(0, 40), price, image };
 }
 
-async function fetchVia(proxy, url) {
-  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 9000);
-  try {
-    const res = await fetch(proxy(url), { signal: ctrl.signal });
-    if (!res.ok) throw new Error(res.status);
-    const html = await res.text();
-    if (html.length < 300) throw new Error("empty");
-    return html;
-  } finally { clearTimeout(t); }
+async function fetchVia(proxy, url, signal) {
+  const res = await fetch(proxy(url), { signal });
+  if (!res.ok) throw new Error(res.status);
+  const html = await res.text();
+  if (html.length < 300) throw new Error("empty");
+  return parseHtml(html, url);
 }
 
-async function microlink(url) {
-  const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+async function microlink(url, signal) {
+  const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`, { signal });
   const j = await res.json();
   if (j.status !== "success") throw new Error("no data");
   const d = j.data || {};
-  return { name: d.title || "", store: d.publisher || prettyHost(url), price: "", image: (d.image && d.image.url) || "" };
+  return { name: d.title || "", store: d.publisher || "", price: "", image: (d.image && d.image.url) || "" };
 }
 
-async function lookup(url) {
-  let best = { name: "", store: "", price: "", image: "" };
-  const merge = r => { for (const k in best) if (!best[k] && r[k]) best[k] = r[k]; };
-  for (const proxy of PROXIES) {
-    try { merge(parseHtml(await fetchVia(proxy, url), url)); if (best.name && best.price && best.image) break; } catch (e) {}
-  }
-  if (!best.name || !best.image) { try { merge(await microlink(url)); } catch (e) {} }
-  if (!best.store) best.store = prettyHost(url);
-  return best;
-}
+let lookupCtrl = null;
 
 async function autoFill() {
   const f = $("wishForm"), url = f.link.value.trim();
   if (!/^https?:\/\/\S+\.\S+/.test(url) || url === lastLooked) return;
-  lastLooked = url; const run = ++lookupRun;
+  lastLooked = url;
+  if (lookupCtrl) lookupCtrl.abort();
+  const ctrl = lookupCtrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);   // give up after 6 s
+  const filled = new Set();
+
+  // store name from the web address shows up instantly
+  const host = prettyHost(url);
+  if (host && (!f.store.value.trim() || autoFilled.has("store"))) { f.store.value = host; autoFilled.add("store"); }
+
+  const apply = r => {
+    if (ctrl.signal.aborted && lookupCtrl !== ctrl) return;
+    for (const k of ["name", "store", "price"]) {
+      if (r[k] && !filled.has(k) && (!f[k].value.trim() || autoFilled.has(k))) { f[k].value = r[k]; autoFilled.add(k); filled.add(k); }
+    }
+    if (r.image && !filled.has("pic") && !pendingPhoto && (!f.image.value.trim() || autoFilled.has("image"))) {
+      f.image.value = r.image; autoFilled.add("image"); setPreview(r.image); filled.add("pic");
+    }
+    if (filled.size) setLookup(`Filled in ${[...filled].join(", ")} — check & edit`, "ok");
+  };
+
   setLookup("Looking it up", "busy");
-  const r = await lookup(url);
-  if (run !== lookupRun) return;               // a newer link was pasted meanwhile
-  const filled = [];
-  // only fill fields that are empty or were auto-filled before — never overwrite your own edits
-  for (const k of ["name", "store", "price"]) {
-    if (r[k] && (!f[k].value.trim() || autoFilled.has(k))) { f[k].value = r[k]; autoFilled.add(k); filled.push(k); }
-  }
-  if (r.image && !pendingPhoto && (!f.image.value.trim() || autoFilled.has("image"))) {
-    f.image.value = r.image; autoFilled.add("image"); setPreview(r.image); filled.push("pic");
-  }
-  if (filled.length >= 2) setLookup(`Filled in ${filled.join(", ")} — check & edit`, "ok");
-  else if (filled.length) setLookup(`Only found the ${filled[0]} — add the rest`, "");
-  else setLookup("Couldn't read this shop — fill in by hand", "");
+  // ask every source at the same time and fill in from whichever answers first
+  const jobs = [...PROXIES.map(p => fetchVia(p, url, ctrl.signal)), microlink(url, ctrl.signal)]
+    .map(j => j.then(apply).catch(() => {}));
+  await Promise.all(jobs);
+  clearTimeout(timer);
+  if (lookupCtrl !== ctrl) return;
+  if (!filled.size) setLookup("Couldn't read this shop — fill in by hand", "");
+  else if (!filled.has("price")) setLookup(`Filled in ${[...filled].join(", ")} — add the price`, "ok");
 }
 
 const lf = $("wishForm").link;
