@@ -1,0 +1,38 @@
+[
+  {
+    "id": "w1",
+    "name": "Film camera",
+    "store": "Kleinanzeigen",
+    "price": "~€120",
+    "link": "https://www.kleinanzeigen.de",
+    "image": "",
+    "category": "tech",
+    "note": "Any point-and-shoot with flash.",
+    "dream": true,
+    "got": false
+  },
+  {
+    "id": "w2",
+    "name": "Mini shoulder bag",
+    "store": "COS",
+    "price": "€89",
+    "link": "https://www.cos.com",
+    "image": "",
+    "category": "fashion",
+    "note": "Black, the small one.",
+    "dream": false,
+    "got": false
+  },
+  {
+    "id": "w3",
+    "name": "Silver hoops",
+    "store": "Etsy",
+    "price": "€35",
+    "link": "https://www.etsy.com",
+    "image": "",
+    "category": "jewellery",
+    "note": "Medium size, not too chunky.",
+    "dream": false,
+    "got": true
+  }
+]

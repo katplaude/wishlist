@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kat's wishlist</title>
+<meta name="description" content="Things I'd love — links and all.">
+<meta property="og:title" content="kat's wishlist">
+<meta property="og:description" content="Things I'd love — links and all.">
+<meta property="og:image" content="me.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Pinyon+Script&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e; --paper: #ffffff; --grey: #f2f1ef; --mute: #6b6b6b;
+    --pink: #ff2d95; --lime: #d7f205;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: Inter, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  .strip { background: var(--ink); color: var(--lime); font-size: 11px; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; white-space: nowrap; overflow: hidden; padding: 9px 0; }
+  .strip span { display: inline-block; animation: slide 28s linear infinite; }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* header */
+  header { padding: 48px 0 40px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: center; }
+  .label { font-size: 11px; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: clamp(72px, 14vw, 170px); line-height: .9; margin-top: 18px; text-transform: uppercase; }
+  .script { font-family: "Pinyon Script", cursive; color: var(--pink); font-size: clamp(46px, 8vw, 96px); line-height: 1; display: block; margin: -0.35em 0 0 14%; transform: rotate(-4deg); }
+  .intro { max-width: 420px; margin-top: 22px; font-size: 16px; line-height: 1.5; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .btn { font: 700 12px/1 Inter, sans-serif; letter-spacing: .15em; text-transform: uppercase; padding: 14px 18px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); cursor: pointer; text-decoration: none; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.lime { background: var(--lime); color: var(--ink); }
+  .btn:hover { background: var(--pink); border-color: var(--pink); color: var(--paper); }
+
+  .photo { position: relative; justify-self: center; width: min(100%, 360px); }
+  .photo .frame { background: var(--paper); padding: 12px 12px 54px; box-shadow: 0 18px 40px rgba(0,0,0,.18); transform: rotate(3deg); border: 1px solid #e6e6e6; }
+  .photo img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+  .photo .caption { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-family: "Pinyon Script", cursive; font-size: 30px; color: var(--ink); }
+  .photo .tape { position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-3deg); background: var(--lime); padding: 7px 14px; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; z-index: 2; }
+  .photo .sticker { position: absolute; bottom: 30px; right: -14px; background: var(--pink); color: var(--paper); width: 86px; height: 86px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-family: Anton, sans-serif; font-size: 15px; line-height: 1.05; text-transform: uppercase; transform: rotate(12deg); z-index: 2; }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 22px 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  .chip { font: 700 12px/1 Inter, sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 10px 14px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+  .chip.on { background: var(--lime); }
+  .count { margin-left: auto; align-self: center; font-size: 12px; color: var(--mute); letter-spacing: .1em; text-transform: uppercase; }
+
+  /* grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px 22px; padding: 36px 0 64px; }
+  .empty { grid-column: 1 / -1; text-align: center; padding: 60px 0; font-family: Anton, sans-serif; font-size: 32px; text-transform: uppercase; color: var(--mute); }
+  .card { display: flex; flex-direction: column; text-decoration: none; position: relative; }
+  .pic { aspect-ratio: 4 / 5; background: var(--grey); overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+  .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .card:hover .pic img { transform: scale(1.04); }
+  .fallback { font-family: Anton, sans-serif; font-size: 40px; text-transform: uppercase; padding: 16px; text-align: center; line-height: 1; }
+  .num { position: absolute; top: 10px; left: 10px; background: var(--paper); font-size: 11px; font-weight: 700; padding: 5px 7px; letter-spacing: .1em; }
+  .dream { position: absolute; top: 10px; right: 10px; background: var(--pink); color: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 6px 8px; }
+  .got::after { content: "got it ✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(14,14,14,.6); color: var(--lime); font-family: Anton, sans-serif; font-size: 34px; text-transform: uppercase; }
+  .got .fallback { opacity: 0; }
+  .meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--mute); }
+  .price { color: var(--ink); }
+  .name { font-family: Anton, sans-serif; font-size: 24px; text-transform: uppercase; line-height: 1.05; margin-top: 6px; }
+  .note { font-size: 14px; line-height: 1.45; margin-top: 6px; color: #333; }
+  .go { margin-top: 10px; font-size: 12px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+  .card:hover .go { color: var(--pink); }
+
+  /* edit tools on cards (only in edit mode) */
+  .tools { display: none; gap: 6px; margin-top: 10px; }
+  body.editing .tools { display: flex; }
+  .tool { font: 700 11px/1 Inter, sans-serif; letter-spacing: .1em; text-transform: uppercase; padding: 8px 10px; border: 1.5px solid var(--ink); background: var(--paper); cursor: pointer; }
+  .tool:hover { background: var(--lime); }
+  .tool.del:hover { background: var(--pink); color: var(--paper); border-color: var(--pink); }
+
+  /* floating add button */
+  .fab { display: none; position: fixed; right: 18px; bottom: 18px; z-index: 20; font: 400 22px/1 Anton, sans-serif; letter-spacing: .04em; text-transform: uppercase; background: var(--pink); color: var(--paper); border: none; padding: 18px 22px; cursor: pointer; box-shadow: 0 10px 24px rgba(255,45,149,.35); }
+  body.editing .fab { display: block; }
+  .fab:hover { background: var(--ink); }
+  .editbar { display: none; background: var(--lime); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 10px 16px; text-align: center; }
+  body.editing .editbar { display: block; }
+  .editbar button { background: none; border: none; font: inherit; text-decoration: underline; cursor: pointer; margin-left: 10px; }
+
+  /* modal */
+  .modal { position: fixed; inset: 0; background: rgba(14,14,14,.55); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px; }
+  .modal.open { display: flex; }
+  .sheet { background: var(--paper); width: 100%; max-width: 480px; max-height: 92vh; overflow: auto; padding: 26px 22px; border: 2px solid var(--ink); }
+  .sheet h2 { font-family: Anton, sans-serif; font-weight: 400; font-size: 44px; text-transform: uppercase; line-height: 1; }
+  .sheet h2 em { font-family: "Pinyon Script", cursive; font-style: normal; color: var(--pink); text-transform: none; font-size: 48px; }
+  .sheet p.hint { font-size: 13px; color: var(--mute); line-height: 1.45; margin-top: 8px; }
+  .field { display: block; margin-top: 14px; }
+  .field span { display: block; font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; font: 400 15px Inter, sans-serif; padding: 11px 12px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 0; }
+  .field input:focus, .field textarea:focus { outline: none; box-shadow: 4px 4px 0 var(--lime); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .check { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .check input { width: 18px; height: 18px; accent-color: var(--pink); }
+  .sheet .actions { justify-content: flex-end; }
+  .err { color: var(--pink); font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 1em; }
+
+  footer { background: var(--ink); color: var(--paper); padding: 40px 0; }
+  footer .big { font-family: Anton, sans-serif; font-size: 40px; text-transform: uppercase; }
+  footer .big em { font-family: "Pinyon Script", cursive; font-style: normal; color: var(--pink); text-transform: none; font-size: 46px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(90px); background: var(--lime); color: var(--ink); font-weight: 700; font-size: 13px; padding: 12px 18px; transition: transform .25s ease; z-index: 40; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 760px) {
+    header { grid-template-columns: 1fr; }
+    .photo { width: min(80%, 320px); margin-top: 10px; }
+    .row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="editbar">edit mode — only you see this <button id="exitEdit">exit</button></div>
+<div class="strip"><span id="strip"></span></div>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="label">wishlist · berlin · <span id="updated"></span></div>
+      <h1>Wish<br>list</h1>
+      <span class="script">kat's little</span>
+      <p class="intro">Birthdays, Christmas, "saw this and thought of you" — here's what I'd actually love. Pink tag = dream item.</p>
+      <div class="actions">
+        <button class="btn" id="share">Share this list</button>
+      </div>
+    </div>
+    <div class="photo">
+      <span class="tape">fitting room diaries</span>
+      <div class="frame">
+        <img src="me.jpg" alt="Kat in a fitting room holding a huge pile of clothes">
+      </div>
+      <span class="caption">just a few things…</span>
+      <span class="sticker">help me<br>choose</span>
+    </div>
+  </header>
+
+  <nav class="filters" id="filters"></nav>
+  <main class="grid" id="grid"></main>
+</div>
+
+<footer>
+  <div class="wrap"><div class="big">thank <em>you</em> ♡</div></div>
+</footer>
+
+<button class="fab" id="addBtn">+ add wish</button>
+
+<div class="modal" id="wishModal">
+  <form class="sheet" id="wishForm">
+    <h2>New <em>wish</em></h2>
+    <label class="field"><span>What is it *</span><input name="name" required placeholder="Mini shoulder bag"></label>
+    <label class="field"><span>Link</span><input name="link" type="url" placeholder="https://…"></label>
+    <div class="row">
+      <label class="field"><span>Price</span><input name="price" placeholder="€89"></label>
+      <label class="field"><span>Store</span><input name="store" placeholder="COS"></label>
+    </div>
+    <label class="field"><span>Image URL</span><input name="image" type="url" placeholder="right-click product photo → copy image address"></label>
+    <label class="field"><span>Category</span><input name="category" list="cats" placeholder="fashion"></label>
+    <datalist id="cats"></datalist>
+    <label class="field"><span>Note</span><textarea name="note" rows="2" placeholder="size, colour, why…"></textarea></label>
+    <label class="check"><input type="checkbox" name="dream"> Dream item ♡</label>
+    <div class="err" id="wishErr"></div>
+    <div class="actions">
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button type="submit" class="btn">Add to list</button>
+    </div>
+  </form>
+</div>
+
+<div class="modal" id="tokenModal">
+  <form class="sheet" id="tokenForm">
+    <h2>One-time <em>setup</em></h2>
+    <p class="hint">To save wishes, the page needs a GitHub token that can edit this repo. It's stored only in this browser — nobody else sees it. GitHub → Settings → Developer settings → Fine-grained tokens → only this repo → Contents: Read and write.</p>
+    <label class="field"><span>GitHub token</span><input name="token" type="password" required autocomplete="off"></label>
+    <label class="field"><span>Repo (owner/name)</span><input name="repo" required placeholder="username/wishlist"></label>
+    <div class="err" id="tokenErr"></div>
+    <div class="actions">
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button type="submit" class="btn">Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   HOW IT WORKS
+   - Everyone sees the list from wishes.json.
+   - Open the site with #edit at the end of the URL
+     (e.g. https://you.github.io/wishlist/#edit) to switch on edit mode.
+     It stays on in that browser until you press "exit".
+   - In edit mode: pink "+ add wish" button, plus "got it" / "remove" on each card.
+     Changes are saved straight into wishes.json in your repo.
+   ============================================================ */
+
+const FILE = "wishes.json";
+const LS = { token: "wl_token", repo: "wl_repo", edit: "wl_edit" };
+const store = {
+  get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
+  del: k => { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+let ITEMS = [];
+let active = "all";
+const $ = id => document.getElementById(id);
+const grid = $("grid"), filters = $("filters");
+
+document.getElementById("updated").textContent = new Date().getFullYear();
+$("strip").textContent = "wishlist ✦ berlin ✦ links inside ✦ dream items in pink ✦ ".repeat(12);
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- edit mode ---------- */
+if (location.hash === "#edit") { store.set(LS.edit, "1"); history.replaceState(null, "", location.pathname + location.search); }
+const editing = () => store.get(LS.edit) === "1";
+if (editing()) document.body.classList.add("editing");
+$("exitEdit").onclick = () => { store.del(LS.edit); document.body.classList.remove("editing"); render(); };
+
+function guessRepo() {
+  const host = location.hostname;
+  if (!host.endsWith(".github.io")) return "";
+  const owner = host.split(".")[0];
+  const first = location.pathname.split("/").filter(Boolean)[0];
+  return `${owner}/${first && !first.includes(".") ? first : host}`;
+}
+
+/* ---------- GitHub save ---------- */
+const b64encode = str => { const bytes = new TextEncoder().encode(str); let bin = ""; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin); };
+const b64decode = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g, "")), c => c.charCodeAt(0)));
+
+async function gh(path, opts = {}) {
+  const res = await fetch(`https://api.github.com/repos/${store.get(LS.repo)}/contents/${path}`, {
+    ...opts,
+    headers: { "Authorization": `Bearer ${store.get(LS.token)}`, "Accept": "application/vnd.github+json", ...(opts.headers || {}) }
+  });
+  if (!res.ok) {
+    const msg = res.status === 401 ? "Token not accepted — check it in setup."
+      : res.status === 404 ? "Repo or file not found — check owner/name."
+      : res.status === 409 ? "Someone else saved at the same time, try again."
+      : `GitHub error ${res.status}`;
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+// read current file from GitHub, apply change, write it back
+async function saveChange(mutate, message) {
+  if (!store.get(LS.token) || !store.get(LS.repo)) { await askToken(); }
+  const file = await gh(FILE);
+  const list = JSON.parse(b64decode(file.content));
+  const next = mutate(list);
+  await gh(FILE, {
+    method: "PUT",
+    body: JSON.stringify({ message, content: b64encode(JSON.stringify(next, null, 2) + "\n"), sha: file.sha })
+  });
+  ITEMS = next; render();
+  return next;
+}
+
+function askToken() {
+  return new Promise((resolve, reject) => {
+    const m = $("tokenModal"), f = $("tokenForm");
+    f.repo.value = store.get(LS.repo) || guessRepo();
+    $("tokenErr").textContent = "";
+    m.classList.add("open"); f.token.focus();
+    f.onsubmit = async e => {
+      e.preventDefault();
+      store.set(LS.token, f.token.value.trim());
+      store.set(LS.repo, f.repo.value.trim().replace(/^https:\/\/github.com\//, "").replace(/\/$/, ""));
+      try { await gh(FILE); m.classList.remove("open"); f.token.value = ""; resolve(); }
+      catch (err) { $("tokenErr").textContent = err.message; }
+    };
+    m.querySelector("[data-close]").onclick = () => { m.classList.remove("open"); reject(new Error("Setup cancelled")); };
+  });
+}
+
+/* ---------- add wish ---------- */
+$("addBtn").onclick = () => {
+  const f = $("wishForm"); f.reset(); $("wishErr").textContent = "";
+  $("cats").innerHTML = [...new Set(ITEMS.map(i => i.category).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join("");
+  $("wishModal").classList.add("open"); f.name.focus();
+};
+$("wishModal").querySelector("[data-close]").onclick = () => $("wishModal").classList.remove("open");
+
+$("wishForm").onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target, btn = f.querySelector("[type=submit]");
+  const wish = {
+    id: "w" + Date.now().toString(36),
+    name: f.name.value.trim(), store: f.store.value.trim(), price: f.price.value.trim(),
+    link: f.link.value.trim(), image: f.image.value.trim(),
+    category: f.category.value.trim().toLowerCase(), note: f.note.value.trim(),
+    dream: f.dream.checked, got: false
+  };
+  btn.disabled = true; btn.textContent = "Saving…";
+  try {
+    await saveChange(list => [wish, ...list], `Add wish: ${wish.name}`);
+    $("wishModal").classList.remove("open");
+    toast("Added ✓ live for everyone in ~1 min");
+  } catch (err) { $("wishErr").textContent = err.message; }
+  btn.disabled = false; btn.textContent = "Add to list";
+};
+
+async function toggleGot(id) {
+  try { await saveChange(l => l.map(i => i.id === id ? { ...i, got: !i.got } : i), "Update wish"); toast("Saved ✓"); }
+  catch (err) { toast(err.message); }
+}
+async function removeWish(id) {
+  const item = ITEMS.find(i => i.id === id);
+  if (!confirm(`Remove "${item?.name}"?`)) return;
+  try { await saveChange(l => l.filter(i => i.id !== id), `Remove wish: ${item?.name}`); toast("Removed"); }
+  catch (err) { toast(err.message); }
+}
+
+/* ---------- render ---------- */
+function render() { renderFilters(); renderGrid(); }
+
+function renderFilters() {
+  const cats = ["all", ...new Set(ITEMS.map(i => i.category).filter(Boolean))];
+  if (!cats.includes(active)) active = "all";
+  filters.innerHTML = cats.map(c => `<button class="chip ${c === active ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")
+    + `<span class="count" id="count"></span>`;
+  filters.querySelectorAll(".chip").forEach(b => b.onclick = () => { active = b.dataset.cat; render(); });
+}
+
+function renderGrid() {
+  const list = ITEMS.filter(i => active === "all" || i.category === active)
+    .sort((a, b) => (a.got - b.got) || (b.dream - a.dream));
+  $("count").textContent = `${list.length} item${list.length === 1 ? "" : "s"}`;
+  if (!list.length) { grid.innerHTML = `<div class="empty">nothing here yet</div>`; return; }
+  grid.innerHTML = list.map((i, n) => `
+    <a class="card" href="${esc(i.link || "#")}" target="_blank" rel="noopener">
+      <div class="pic ${i.got ? "got" : ""}">
+        ${i.image ? `<img src="${esc(i.image)}" alt="${esc(i.name)}" loading="lazy" data-fallback="${esc(i.name)}">`
+                  : `<div class="fallback">${esc(i.name)}</div>`}
+        <span class="num">${String(n + 1).padStart(2, "0")}</span>
+        ${i.dream && !i.got ? `<span class="dream">dream ♡</span>` : ""}
+      </div>
+      <div class="meta"><span>${esc(i.store)}</span><span class="price">${esc(i.price)}</span></div>
+      <div class="name">${esc(i.name)}</div>
+      ${i.note ? `<p class="note">${esc(i.note)}</p>` : ""}
+      <span class="go">${i.got ? "already have it" : "get it →"}</span>
+      <div class="tools">
+        <button class="tool" data-act="got" data-id="${esc(i.id)}">${i.got ? "undo got it" : "got it ✓"}</button>
+        <button class="tool del" data-act="del" data-id="${esc(i.id)}">remove</button>
+      </div>
+    </a>`).join("");
+
+  grid.querySelectorAll("img[data-fallback]").forEach(img => img.onerror = () => {
+    const d = document.createElement("div"); d.className = "fallback"; d.textContent = img.dataset.fallback; img.replaceWith(d);
+  });
+  grid.querySelectorAll(".tool").forEach(b => b.onclick = e => {
+    e.preventDefault(); e.stopPropagation();
+    b.dataset.act === "got" ? toggleGot(b.dataset.id) : removeWish(b.dataset.id);
+  });
+}
+
+/* ---------- share ---------- */
+$("share").onclick = async () => {
+  const url = location.origin + location.pathname;
+  if (navigator.share) { try { await navigator.share({ title: "kat's wishlist", text: "my wishlist ♡", url }); } catch (e) {} return; }
+  try { await navigator.clipboard.writeText(url); toast("Link copied ✓"); } catch (e) { toast(url); }
+};
+
+/* ---------- load ---------- */
+(async () => {
+  try {
+    // in edit mode with a token, read the freshest version straight from GitHub
+    if (editing() && store.get(LS.token) && store.get(LS.repo)) {
+      const file = await gh(FILE);
+      ITEMS = JSON.parse(b64decode(file.content));
+    } else {
+      const res = await fetch(`${FILE}?v=${Date.now()}`);
+      ITEMS = await res.json();
+    }
+  } catch (e) { ITEMS = []; }
+  render();
+})();
+</script>
+</body>
+</html>
