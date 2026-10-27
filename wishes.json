@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqgrunb",
+    "name": "Water purifier",
+    "store": "westwing.de",
+    "price": "119€",
+    "link": "https://www.westwing.de/wasserfilterkaraffe-set-purifier-146189.html?simple=DEQ22AAR50828-186139&utm_source=google&utm_medium=sea-conversion-nbr&utm_campaign=de_performancemax_nbr_third-party&utm_content=22489419741.6595259015.pla.DEQ22AAR50828-186139&gad_source=1&gad_campaignid=22495979267&gbraid=0AAAAADZC_78EYm_HqH2tXcXyKWpMzELbZ&gclid=CjwKCAjwl4HXBhAjEiwAHlpWhGIKmKhuEi4yoqR7NG1Kqv5ot8mUYDfcF5eYMjBFH0EuyFOPFPwu_hoCb_EQAvD_BwE",
+    "image": "https://cdn.shopify.com/s/files/1/0613/3107/9307/files/DEQ22AAR50828-186139_6274404686753e989f6298e47c5fb28b_dtl_1.jpg?v=1757670874",
+    "category": "house",
+    "note": "can be actually any water filter but i really like this one",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqgn7tz",
     "name": "Hello Klean Shower Head",
     "store": "Hello Klean",
