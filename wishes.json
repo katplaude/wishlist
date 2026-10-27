@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqh71gt",
+    "name": "Coat",
+    "store": "Arket",
+    "price": "299€",
+    "link": "https://www.arket.com/de-de/product/wool-blend-belted-coat-black-1361572001/",
+    "image": "https://media.arket.com/assets/006/bd/d0/bdd0ca330c56796a25452261d7bc6993e6e9c750.jpg?imwidth=1280",
+    "category": "fashion",
+    "note": "want a classic black coat",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqh50e2",
     "name": "Shoulder bag",
     "store": "Coach",
