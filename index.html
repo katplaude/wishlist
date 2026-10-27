@@ -38,11 +38,8 @@
   .btn:hover { background: var(--pink); border-color: var(--pink); color: var(--paper); }
 
   .photo { position: relative; justify-self: center; width: min(100%, 360px); }
-  .photo .frame { background: var(--paper); padding: 12px 12px 54px; box-shadow: 0 18px 40px rgba(0,0,0,.18); transform: rotate(3deg); border: 1px solid #e6e6e6; }
+  .photo .frame { background: var(--paper); padding: 12px; box-shadow: 0 18px 40px rgba(0,0,0,.18); transform: rotate(3deg); border: 1px solid #e6e6e6; }
   .photo img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
-  .photo .caption { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-family: "Pinyon Script", cursive; font-size: 30px; color: var(--ink); }
-  .photo .tape { position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-3deg); background: var(--lime); padding: 7px 14px; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; z-index: 2; }
-  .photo .sticker { position: absolute; bottom: 30px; right: -14px; background: var(--pink); color: var(--paper); width: 86px; height: 86px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-family: Anton, sans-serif; font-size: 15px; line-height: 1.05; text-transform: uppercase; transform: rotate(12deg); z-index: 2; }
 
   /* filters */
   .filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 22px 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
@@ -99,6 +96,12 @@
   .check { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 14px; font-weight: 500; cursor: pointer; }
   .check input { width: 18px; height: 18px; accent-color: var(--pink); }
   .sheet .actions { justify-content: flex-end; }
+  .picpick { display: flex; gap: 12px; align-items: stretch; }
+  .prev { width: 92px; aspect-ratio: 4 / 5; background: var(--grey) center / cover no-repeat; flex: none; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+  .prev.has { font-size: 0; }
+  .picbtns { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .picbtns input[type=url] { width: 100%; font: 400 14px Inter, sans-serif; padding: 10px 12px; border: 1.5px solid var(--ink); border-radius: 0; }
+  .btn.small { padding: 11px 12px; text-align: center; }
   .err { color: var(--pink); font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 1em; }
 
   footer { background: var(--ink); color: var(--paper); padding: 40px 0; }
@@ -123,7 +126,7 @@
 <div class="wrap">
   <header>
     <div>
-      <div class="label">wishlist · berlin · <span id="updated"></span></div>
+      <div class="label">wishlist · <span id="updated"></span></div>
       <h1>Wish<br>list</h1>
       <span class="script">kat's little</span>
       <p class="intro">Birthdays, Christmas, "saw this and thought of you" — here's what I'd actually love. Pink tag = dream item.</p>
@@ -132,12 +135,9 @@
       </div>
     </div>
     <div class="photo">
-      <span class="tape">fitting room diaries</span>
       <div class="frame">
         <img src="me.jpg" alt="Kat in a fitting room holding a huge pile of clothes">
       </div>
-      <span class="caption">just a few things…</span>
-      <span class="sticker">help me<br>choose</span>
     </div>
   </header>
 
@@ -153,14 +153,22 @@
 
 <div class="modal" id="wishModal">
   <form class="sheet" id="wishForm">
-    <h2>New <em>wish</em></h2>
+    <h2 id="wishTitle">New <em>wish</em></h2>
     <label class="field"><span>What is it *</span><input name="name" required placeholder="Mini shoulder bag"></label>
     <label class="field"><span>Link</span><input name="link" type="url" placeholder="https://…"></label>
     <div class="row">
       <label class="field"><span>Price</span><input name="price" placeholder="€89"></label>
       <label class="field"><span>Store</span><input name="store" placeholder="COS"></label>
     </div>
-    <label class="field"><span>Image URL</span><input name="image" type="url" placeholder="right-click product photo → copy image address"></label>
+    <div class="field"><span>Picture</span>
+      <div class="picpick">
+        <div class="prev" id="prev">no pic</div>
+        <div class="picbtns">
+          <label class="btn ghost small">upload photo<input type="file" name="file" accept="image/*" hidden></label>
+          <input name="image" type="url" placeholder="…or paste image link">
+        </div>
+      </div>
+    </div>
     <label class="field"><span>Category</span><input name="category" list="cats" placeholder="fashion"></label>
     <datalist id="cats"></datalist>
     <label class="field"><span>Note</span><textarea name="note" rows="2" placeholder="size, colour, why…"></textarea></label>
@@ -168,7 +176,7 @@
     <div class="err" id="wishErr"></div>
     <div class="actions">
       <button type="button" class="btn ghost" data-close>Cancel</button>
-      <button type="submit" class="btn">Add to list</button>
+      <button type="submit" class="btn" id="wishSubmit">Add to list</button>
     </div>
   </form>
 </div>
@@ -176,7 +184,7 @@
 <div class="modal" id="tokenModal">
   <form class="sheet" id="tokenForm">
     <h2>One-time <em>setup</em></h2>
-    <p class="hint">To save wishes, the page needs a GitHub token that can edit this repo. It's stored only in this browser — nobody else sees it. GitHub → Settings → Developer settings → Fine-grained tokens → only this repo → Contents: Read and write.</p>
+    <p class="hint">To save wishes and photos, the page needs a GitHub token that can edit this repo. It's stored only in this browser — nobody else sees it. GitHub → Settings → Developer settings → Fine-grained tokens → only this repo → Contents: Read and write.</p>
     <label class="field"><span>GitHub token</span><input name="token" type="password" required autocomplete="off"></label>
     <label class="field"><span>Repo (owner/name)</span><input name="repo" required placeholder="username/wishlist"></label>
     <div class="err" id="tokenErr"></div>
@@ -193,10 +201,11 @@
 /* ============================================================
    HOW IT WORKS
    - Everyone sees the list from wishes.json.
-   - Open the site with #edit at the end of the URL
-     (e.g. https://you.github.io/wishlist/#edit) to switch on edit mode.
+   - Open the site with ?edit at the end of the URL
+     (e.g. https://you.github.io/wishlist/?edit) to switch on edit mode.
      It stays on in that browser until you press "exit".
-   - In edit mode: pink "+ add wish" button, plus "got it" / "remove" on each card.
+   - In edit mode: pink "+ add wish" button, plus "edit" / "got it" / "remove" on each card.
+     Uploaded photos are saved into the images/ folder of the repo.
      Changes are saved straight into wishes.json in your repo.
    ============================================================ */
 
@@ -214,7 +223,7 @@ const $ = id => document.getElementById(id);
 const grid = $("grid"), filters = $("filters");
 
 document.getElementById("updated").textContent = new Date().getFullYear();
-$("strip").textContent = "wishlist ✦ berlin ✦ links inside ✦ dream items in pink ✦ ".repeat(12);
+$("strip").textContent = "wishlist ✦ links inside ✦ dream items in pink ✦ ".repeat(12);
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 
@@ -224,9 +233,17 @@ function toast(msg) {
 }
 
 /* ---------- edit mode ---------- */
-if (location.hash === "#edit") { store.set(LS.edit, "1"); history.replaceState(null, "", location.pathname + location.search); }
+function checkEditFlag() {
+  const q = new URLSearchParams(location.search);
+  if (location.hash === "#edit" || q.has("edit")) {
+    store.set(LS.edit, "1");
+    history.replaceState(null, "", location.pathname);
+  }
+  document.body.classList.toggle("editing", editing());
+}
 const editing = () => store.get(LS.edit) === "1";
-if (editing()) document.body.classList.add("editing");
+checkEditFlag();
+window.addEventListener("hashchange", () => { checkEditFlag(); render(); });
 $("exitEdit").onclick = () => { store.del(LS.edit); document.body.classList.remove("editing"); render(); };
 
 function guessRepo() {
@@ -287,31 +304,89 @@ function askToken() {
   });
 }
 
-/* ---------- add wish ---------- */
-$("addBtn").onclick = () => {
+/* ---------- add / edit wish ---------- */
+let editingId = null, pendingPhoto = null;   // pendingPhoto = { blob, ext }
+
+function setPreview(src) {
+  const p = $("prev");
+  p.style.backgroundImage = src ? `url("${src}")` : "";
+  p.classList.toggle("has", !!src);
+}
+
+function openForm(item) {
   const f = $("wishForm"); f.reset(); $("wishErr").textContent = "";
+  editingId = item ? item.id : null; pendingPhoto = null;
+  $("wishTitle").innerHTML = item ? "Edit <em>wish</em>" : "New <em>wish</em>";
+  $("wishSubmit").textContent = item ? "Save changes" : "Add to list";
+  if (item) ["name","link","price","store","image","category","note"].forEach(k => f[k].value = item[k] || "");
+  f.dream.checked = !!(item && item.dream);
+  setPreview(item && item.image);
   $("cats").innerHTML = [...new Set(ITEMS.map(i => i.category).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join("");
-  $("wishModal").classList.add("open"); f.name.focus();
-};
+  $("wishModal").classList.add("open");
+}
+$("addBtn").onclick = () => openForm(null);
 $("wishModal").querySelector("[data-close]").onclick = () => $("wishModal").classList.remove("open");
+
+// shrink the photo in the browser so the repo stays small
+function shrink(file, max = 1000) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b => b ? resolve(b) : reject(new Error("Couldn't read that photo")), "image/jpeg", 0.82);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => reject(new Error("Couldn't read that photo (try a JPG or PNG)"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+$("wishForm").file.onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    const blob = await shrink(file);
+    pendingPhoto = { blob };
+    setPreview(URL.createObjectURL(blob));
+    $("wishForm").image.value = "";
+  } catch (err) { $("wishErr").textContent = err.message; }
+};
+$("wishForm").image.oninput = e => { pendingPhoto = null; setPreview(e.target.value.trim()); };
+
+async function uploadPhoto(blob) {
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+  const path = `images/${Date.now().toString(36)}.jpg`;
+  await gh(path, { method: "PUT", body: JSON.stringify({ message: "Add wish photo", content: btoa(bin) }) });
+  return path;
+}
 
 $("wishForm").onsubmit = async e => {
   e.preventDefault();
-  const f = e.target, btn = f.querySelector("[type=submit]");
-  const wish = {
-    id: "w" + Date.now().toString(36),
-    name: f.name.value.trim(), store: f.store.value.trim(), price: f.price.value.trim(),
-    link: f.link.value.trim(), image: f.image.value.trim(),
-    category: f.category.value.trim().toLowerCase(), note: f.note.value.trim(),
-    dream: f.dream.checked, got: false
-  };
+  const f = e.target, btn = $("wishSubmit"), label = btn.textContent;
   btn.disabled = true; btn.textContent = "Saving…";
   try {
-    await saveChange(list => [wish, ...list], `Add wish: ${wish.name}`);
+    if (!store.get(LS.token) || !store.get(LS.repo)) await askToken();
+    let image = f.image.value.trim();
+    if (pendingPhoto) { btn.textContent = "Uploading photo…"; image = await uploadPhoto(pendingPhoto.blob); }
+    else if (editingId && !image) image = "";
+    const data = {
+      name: f.name.value.trim(), store: f.store.value.trim(), price: f.price.value.trim(),
+      link: f.link.value.trim(), image,
+      category: f.category.value.trim().toLowerCase(), note: f.note.value.trim(), dream: f.dream.checked
+    };
+    btn.textContent = "Saving…";
+    if (editingId) {
+      await saveChange(l => l.map(i => i.id === editingId ? { ...i, ...data } : i), `Edit wish: ${data.name}`);
+    } else {
+      await saveChange(l => [{ id: "w" + Date.now().toString(36), ...data, got: false }, ...l], `Add wish: ${data.name}`);
+    }
     $("wishModal").classList.remove("open");
-    toast("Added ✓ live for everyone in ~1 min");
+    toast("Saved ✓ live for everyone in ~1 min");
   } catch (err) { $("wishErr").textContent = err.message; }
-  btn.disabled = false; btn.textContent = "Add to list";
+  btn.disabled = false; btn.textContent = label;
 };
 
 async function toggleGot(id) {
@@ -326,6 +401,11 @@ async function removeWish(id) {
 }
 
 /* ---------- render ---------- */
+function imgSrc(src) {
+  // freshly uploaded photos take ~1 min to appear on Pages; in edit mode show them from GitHub directly
+  if (/^images\//.test(src) && editing() && store.get(LS.repo)) return `https://raw.githubusercontent.com/${store.get(LS.repo)}/HEAD/${src}`;
+  return src;
+}
 function render() { renderFilters(); renderGrid(); }
 
 function renderFilters() {
@@ -344,7 +424,7 @@ function renderGrid() {
   grid.innerHTML = list.map((i, n) => `
     <a class="card" href="${esc(i.link || "#")}" target="_blank" rel="noopener">
       <div class="pic ${i.got ? "got" : ""}">
-        ${i.image ? `<img src="${esc(i.image)}" alt="${esc(i.name)}" loading="lazy" data-fallback="${esc(i.name)}">`
+        ${i.image ? `<img src="${esc(imgSrc(i.image))}" alt="${esc(i.name)}" loading="lazy" data-fallback="${esc(i.name)}">`
                   : `<div class="fallback">${esc(i.name)}</div>`}
         <span class="num">${String(n + 1).padStart(2, "0")}</span>
         ${i.dream && !i.got ? `<span class="dream">dream ♡</span>` : ""}
@@ -354,6 +434,7 @@ function renderGrid() {
       ${i.note ? `<p class="note">${esc(i.note)}</p>` : ""}
       <span class="go">${i.got ? "already have it" : "get it →"}</span>
       <div class="tools">
+        <button class="tool" data-act="edit" data-id="${esc(i.id)}">edit</button>
         <button class="tool" data-act="got" data-id="${esc(i.id)}">${i.got ? "undo got it" : "got it ✓"}</button>
         <button class="tool del" data-act="del" data-id="${esc(i.id)}">remove</button>
       </div>
@@ -364,7 +445,9 @@ function renderGrid() {
   });
   grid.querySelectorAll(".tool").forEach(b => b.onclick = e => {
     e.preventDefault(); e.stopPropagation();
-    b.dataset.act === "got" ? toggleGot(b.dataset.id) : removeWish(b.dataset.id);
+    const a = b.dataset.act, id = b.dataset.id;
+    if (a === "edit") openForm(ITEMS.find(i => i.id === id));
+    else if (a === "got") toggleGot(id); else removeWish(id);
   });
 }
 
