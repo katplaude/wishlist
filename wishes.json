@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvqh50e2",
+    "name": "Shoulder bag",
+    "store": "Coach",
+    "price": "495€",
+    "link": "https://de.coach.com/de_DE/products/tabby-schultertasche-26/CH857-B4MPL.html?frp=CH857+B4MPL",
+    "image": "https://coach.scene7.com/is/image/Coach/ch857_b4mpl_a0?$desktopProduct$",
+    "category": "fashion",
+    "note": "dont have to explain a coach bag",
+    "dream": true,
+    "got": false
+  },
+  {
     "id": "wmvqgzsle",
     "name": "Jaded london dress",
     "store": "Jadedldn",
