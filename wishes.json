@@ -1,17 +1,5 @@
 [
   {
-    "id": "w1",
-    "name": "Film camera",
-    "store": "Kleinanzeigen",
-    "price": "~€120",
-    "link": "https://www.kleinanzeigen.de",
-    "image": "",
-    "category": "tech",
-    "note": "Any point-and-shoot with flash.",
-    "dream": true,
-    "got": false
-  },
-  {
     "id": "w2",
     "name": "Mini shoulder bag",
     "store": "COS",
