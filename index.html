@@ -102,6 +102,10 @@
   .picbtns { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
   .picbtns input[type=url] { width: 100%; font: 400 14px Inter, sans-serif; padding: 10px 12px; border: 1.5px solid var(--ink); border-radius: 0; }
   .btn.small { padding: 11px 12px; text-align: center; }
+  .lookup { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-top: 8px; min-height: 1em; color: var(--mute); }
+  .lookup.ok { color: var(--ink); }
+  .lookup.ok::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--lime); border: 1.5px solid var(--ink); margin-right: 8px; }
+  .lookup.busy::after { content: "…"; }
   .err { color: var(--pink); font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 1em; }
 
   footer { background: var(--ink); color: var(--paper); padding: 40px 0; }
@@ -154,8 +158,9 @@
 <div class="modal" id="wishModal">
   <form class="sheet" id="wishForm">
     <h2 id="wishTitle">New <em>wish</em></h2>
+    <label class="field"><span>Paste the link</span><input name="link" type="url" placeholder="https://… — I'll fill in the rest"></label>
+    <div class="lookup" id="lookup"></div>
     <label class="field"><span>What is it *</span><input name="name" required placeholder="Mini shoulder bag"></label>
-    <label class="field"><span>Link</span><input name="link" type="url" placeholder="https://…"></label>
     <div class="row">
       <label class="field"><span>Price</span><input name="price" placeholder="€89"></label>
       <label class="field"><span>Store</span><input name="store" placeholder="COS"></label>
@@ -314,7 +319,7 @@ function setPreview(src) {
 }
 
 function openForm(item) {
-  const f = $("wishForm"); f.reset(); $("wishErr").textContent = "";
+  const f = $("wishForm"); f.reset(); $("wishErr").textContent = ""; setLookup(""); autoFilled = new Set(); lastLooked = item ? item.link : "";
   editingId = item ? item.id : null; pendingPhoto = null;
   $("wishTitle").innerHTML = item ? "Edit <em>wish</em>" : "New <em>wish</em>";
   $("wishSubmit").textContent = item ? "Save changes" : "Add to list";
@@ -354,6 +359,135 @@ $("wishForm").file.onchange = async e => {
   } catch (err) { $("wishErr").textContent = err.message; }
 };
 $("wishForm").image.oninput = e => { pendingPhoto = null; setPreview(e.target.value.trim()); };
+
+/* ---------- paste a link → auto-fill ---------- */
+// Shops don't let other websites read their pages directly, so the page goes through
+// public "proxy" services. Works for most shops; some (that build pages with JS or block bots) won't.
+const PROXIES = [
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+];
+let autoFilled = new Set(), lastLooked = "", lookupRun = 0;
+
+function setLookup(text, cls = "") { const l = $("lookup"); l.textContent = text; l.className = "lookup " + cls; }
+
+const CUR = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", PLN: "zł ", SEK: "kr ", DKK: "kr " };
+function fmtPrice(amount, cur) {
+  if (amount == null || amount === "") return "";
+  let n = parseFloat(String(amount).replace(",", "."));
+  if (isNaN(n)) return String(amount).trim();
+  const num = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(".", ",");
+  const sym = CUR[(cur || "").toUpperCase()];
+  return sym ? sym + num : (cur ? `${num} ${cur}` : "€" + num);
+}
+
+function prettyHost(url) {
+  try {
+    const h = new URL(url).hostname.replace(/^www\d?\./, "").replace(/^(m|shop|store|de|en)\./, "");
+    const base = h.split(".").slice(0, -1).join(" ") || h;
+    return base.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  } catch (e) { return ""; }
+}
+
+function findProduct(node) {
+  if (!node || typeof node !== "object") return null;
+  if (Array.isArray(node)) { for (const n of node) { const r = findProduct(n); if (r) return r; } return null; }
+  const t = [].concat(node["@type"] || []);
+  if (t.some(x => /product/i.test(x))) return node;
+  return findProduct(node["@graph"]) || null;
+}
+
+function parseHtml(html, url) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const meta = (...keys) => {
+    for (const k of keys) {
+      const el = doc.querySelector(`meta[property="${k}"], meta[name="${k}"], meta[itemprop="${k}"]`);
+      if (el && el.content) return el.content.trim();
+    }
+    return "";
+  };
+  let product = null;
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+    if (product) return;
+    try { product = findProduct(JSON.parse(s.textContent)); } catch (e) {}
+  });
+  const offer = product && [].concat(product.offers || [])[0];
+  const offerPrice = offer && (offer.price ?? offer.lowPrice ?? (offer.priceSpecification && offer.priceSpecification.price));
+  const offerCur = offer && (offer.priceCurrency || (offer.priceSpecification && offer.priceSpecification.priceCurrency));
+  const img = product && [].concat(product.image || [])[0];
+  const brand = product && (typeof product.brand === "string" ? product.brand : product.brand && product.brand.name);
+
+  let name = (product && product.name) || meta("og:title", "twitter:title") || (doc.title || "");
+  const site = meta("og:site_name") || brand || prettyHost(url);
+  // drop "| Zara" / "- H&M DE" style endings
+  name = name.replace(/\s*[|–—-]\s*[^|–—-]{2,40}$/, m => (site && m.toLowerCase().includes(site.toLowerCase().split(" ")[0])) || /shop|store|online|kaufen/i.test(m) ? "" : m).trim();
+
+  let image = (img && (typeof img === "string" ? img : img.url)) || meta("og:image", "og:image:url", "twitter:image");
+  if (image) { try { image = new URL(image, url).href; } catch (e) {} }
+
+  const price = fmtPrice(
+    offerPrice ?? (meta("product:price:amount", "og:price:amount", "price") || null),
+    offerCur || meta("product:price:currency", "og:price:currency", "priceCurrency")
+  );
+  return { name: name.slice(0, 120), store: (brand || site || "").slice(0, 40), price, image };
+}
+
+async function fetchVia(proxy, url) {
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 9000);
+  try {
+    const res = await fetch(proxy(url), { signal: ctrl.signal });
+    if (!res.ok) throw new Error(res.status);
+    const html = await res.text();
+    if (html.length < 300) throw new Error("empty");
+    return html;
+  } finally { clearTimeout(t); }
+}
+
+async function microlink(url) {
+  const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+  const j = await res.json();
+  if (j.status !== "success") throw new Error("no data");
+  const d = j.data || {};
+  return { name: d.title || "", store: d.publisher || prettyHost(url), price: "", image: (d.image && d.image.url) || "" };
+}
+
+async function lookup(url) {
+  let best = { name: "", store: "", price: "", image: "" };
+  const merge = r => { for (const k in best) if (!best[k] && r[k]) best[k] = r[k]; };
+  for (const proxy of PROXIES) {
+    try { merge(parseHtml(await fetchVia(proxy, url), url)); if (best.name && best.price && best.image) break; } catch (e) {}
+  }
+  if (!best.name || !best.image) { try { merge(await microlink(url)); } catch (e) {} }
+  if (!best.store) best.store = prettyHost(url);
+  return best;
+}
+
+async function autoFill() {
+  const f = $("wishForm"), url = f.link.value.trim();
+  if (!/^https?:\/\/\S+\.\S+/.test(url) || url === lastLooked) return;
+  lastLooked = url; const run = ++lookupRun;
+  setLookup("Looking it up", "busy");
+  const r = await lookup(url);
+  if (run !== lookupRun) return;               // a newer link was pasted meanwhile
+  const filled = [];
+  // only fill fields that are empty or were auto-filled before — never overwrite your own edits
+  for (const k of ["name", "store", "price"]) {
+    if (r[k] && (!f[k].value.trim() || autoFilled.has(k))) { f[k].value = r[k]; autoFilled.add(k); filled.push(k); }
+  }
+  if (r.image && !pendingPhoto && (!f.image.value.trim() || autoFilled.has("image"))) {
+    f.image.value = r.image; autoFilled.add("image"); setPreview(r.image); filled.push("pic");
+  }
+  if (filled.length >= 2) setLookup(`Filled in ${filled.join(", ")} — check & edit`, "ok");
+  else if (filled.length) setLookup(`Only found the ${filled[0]} — add the rest`, "");
+  else setLookup("Couldn't read this shop — fill in by hand", "");
+}
+
+const lf = $("wishForm").link;
+lf.addEventListener("paste", () => setTimeout(autoFill, 0));
+lf.addEventListener("change", autoFill);
+lf.addEventListener("blur", autoFill);
+["name", "store", "price", "image"].forEach(k => $("wishForm")[k].addEventListener("input", () => autoFilled.delete(k)));
 
 async function uploadPhoto(blob) {
   const buf = new Uint8Array(await blob.arrayBuffer());
