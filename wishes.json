@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmvs1l2y4",
+    "name": "У войны не женское лицо",
+    "store": "Amazon",
+    "price": "10€",
+    "link": "https://www.amazon.de/%D0%A3-%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B-%D0%BD%D0%B5-%D0%B6%D0%B5%D0%BD%D1%81%D0%BA%D0%BE%D0%B5-%D0%BB%D0%B8%D1%86%D0%BE/dp/5969125768",
+    "image": "https://m.media-amazon.com/images/I/61ZZJCVKU2L._SL1500_.jpg",
+    "category": "books",
+    "note": "",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmvqhgs0f",
     "name": "Moka Express Induktion",
     "store": "Bialetti Shop",
