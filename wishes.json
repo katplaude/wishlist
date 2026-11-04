@@ -1,5 +1,18 @@
 [
   {
+    "id": "wmw1xzibo",
+    "name": "HEATTECH Knee High Socks (Ribbed)",
+    "store": "Uniqlo",
+    "price": "8€",
+    "link": "https://www.uniqlo.com/de/en/products/E480732-000/00?colorDisplayCode=01&sizeDisplayCode=024",
+    "image": "https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/480732/item/goods_01_480732_3x4.jpg?width=400",
+    "category": "",
+    "note": "black and white",
+    "dream": false,
+    "list": "bf",
+    "got": false
+  },
+  {
     "id": "wmw1xicbw",
     "name": "Cashmere Scarf",
     "store": "Uniqlo",
