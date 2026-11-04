@@ -79,6 +79,8 @@
   .fab:hover { background: var(--ink); }
   .editbar { display: none; background: var(--lime); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 10px 16px; text-align: center; }
   body.editing .editbar { display: block; }
+  .bm { display: inline-block; background: var(--ink); color: var(--lime); text-decoration: none; padding: 5px 10px; margin-left: 6px; cursor: grab; }
+  @media (max-width: 760px) { .bmwrap { display: none; } }
   .editbar button { background: none; border: none; font: inherit; text-decoration: underline; cursor: pointer; margin-left: 10px; }
 
   /* modal */
@@ -108,12 +110,42 @@
   .lookup.busy::after { content: "…"; }
   .err { color: var(--pink); font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 1em; }
 
+  /* black friday section */
+  .bf { background: var(--ink); color: var(--paper); padding: 64px 0 24px; border-top: 6px solid var(--lime); }
+  .bf-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; padding-bottom: 28px; border-bottom: 2px solid #333; }
+  .bf-label { color: var(--lime); }
+  .bf-title { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: clamp(64px, 12vw, 150px); line-height: .9; text-transform: uppercase; margin-top: 16px; }
+  .bf-script { margin-left: 22%; }
+  .bf-side { display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+  .bf-days { background: var(--lime); color: var(--ink); padding: 14px 18px; text-align: center; transform: rotate(-3deg); }
+  .bf-days b { display: block; font-family: Anton, sans-serif; font-weight: 400; font-size: 56px; line-height: 1; }
+  .bf-days span { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+  .bf-add { display: none; }
+  body.editing .bf-add { display: inline-block; }
+  .bf .btn.lime:hover { background: var(--pink); border-color: var(--pink); color: var(--paper); }
+  .bf .pic { background: #1d1d1d; }
+  .bf .fallback { color: var(--paper); }
+  .bf .meta { color: #9a9a9a; }
+  .bf .price { color: var(--lime); }
+  .bf .note { color: #c9c9c9; }
+  .bf .num { background: var(--lime); color: var(--ink); }
+  .bf .tool { background: var(--ink); color: var(--paper); border-color: var(--paper); }
+  .bf .tool:hover { background: var(--lime); color: var(--ink); }
+  .bf .tool.del:hover { background: var(--pink); color: var(--paper); border-color: var(--pink); }
+  .bf .empty { color: #777; }
+  .bf .got::after { content: "bought ✓"; }
+  .listpick { display: flex; gap: 8px; }
+  .listpick label { flex: 1; }
+  .listpick input { position: absolute; opacity: 0; pointer-events: none; }
+  .listpick span { display: block; text-align: center; font: 700 12px/1 Inter, sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 12px; border: 1.5px solid var(--ink); cursor: pointer; color: var(--ink); margin: 0; }
+  .listpick input:checked + span { background: var(--lime); }
+  .listpick input[value=bf]:checked + span { background: var(--ink); color: var(--lime); }
   footer { background: var(--ink); color: var(--paper); padding: 40px 0; }
   footer .big { font-family: Anton, sans-serif; font-size: 40px; text-transform: uppercase; }
   footer .big em { font-family: "Pinyon Script", cursive; font-style: normal; color: var(--pink); text-transform: none; font-size: 46px; }
 
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(90px); background: var(--lime); color: var(--ink); font-weight: 700; font-size: 13px; padding: 12px 18px; transition: transform .25s ease; z-index: 40; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(90px); background: var(--lime); color: var(--ink); font-weight: 700; font-size: 13px; padding: 12px 18px; transition: transform .25s ease, visibility .25s; z-index: 40; visibility: hidden; }
+  .toast.show { transform: translateX(-50%) translateY(0); visibility: visible; }
 
   @media (max-width: 760px) {
     header { grid-template-columns: 1fr; }
@@ -124,7 +156,7 @@
 </head>
 <body>
 
-<div class="editbar">edit mode — only you see this <button id="exitEdit">exit</button></div>
+<div class="editbar">edit mode — only you see this <span class="bmwrap">· drag this to your bookmarks bar → <a class="bm" id="bm" href="#">+ wishlist</a></span><button id="exitEdit">exit</button></div>
 <div class="strip"><span id="strip"></span></div>
 
 <div class="wrap">
@@ -149,6 +181,23 @@
   <main class="grid" id="grid"></main>
 </div>
 
+<section class="bf" id="bf">
+  <div class="wrap">
+    <div class="bf-head">
+      <div>
+        <div class="label bf-label"><span id="bfDate"></span> · <span id="bfCount"></span></div>
+        <h2 class="bf-title">Black<br>Friday</h2>
+        <span class="script bf-script">my cart</span>
+      </div>
+      <div class="bf-side">
+        <div class="bf-days"><b id="bfDays"></b><span id="bfDaysLabel">days to go</span></div>
+        <button class="btn lime bf-add" id="bfAdd">+ add to black friday</button>
+      </div>
+    </div>
+    <div class="grid bf-grid" id="bfGrid"></div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap"><div class="big">thank <em>you</em> ♡</div></div>
 </footer>
@@ -158,6 +207,12 @@
 <div class="modal" id="wishModal">
   <form class="sheet" id="wishForm">
     <h2 id="wishTitle">New <em>wish</em></h2>
+    <div class="field"><span>Which list</span>
+      <div class="listpick">
+        <label><input type="radio" name="list" value="wish" checked><span>Wishlist</span></label>
+        <label><input type="radio" name="list" value="bf"><span>Black Friday</span></label>
+      </div>
+    </div>
     <label class="field"><span>Paste the link</span><input name="link" type="url" placeholder="https://… — I'll fill in the rest"></label>
     <div class="lookup" id="lookup"></div>
     <label class="field"><span>What is it *</span><input name="name" required placeholder="Mini shoulder bag"></label>
@@ -318,18 +373,20 @@ function setPreview(src) {
   p.classList.toggle("has", !!src);
 }
 
-function openForm(item) {
+function openForm(item, list) {
   const f = $("wishForm"); f.reset(); $("wishErr").textContent = ""; setLookup(""); autoFilled = new Set(); lastLooked = item ? item.link : "";
   editingId = item ? item.id : null; pendingPhoto = null;
   $("wishTitle").innerHTML = item ? "Edit <em>wish</em>" : "New <em>wish</em>";
   $("wishSubmit").textContent = item ? "Save changes" : "Add to list";
   if (item) ["name","link","price","store","image","category","note"].forEach(k => f[k].value = item[k] || "");
   f.dream.checked = !!(item && item.dream);
+  f.list.value = (item ? item.list : list) === "bf" ? "bf" : "wish";
   setPreview(item && item.image);
   $("cats").innerHTML = [...new Set(ITEMS.map(i => i.category).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join("");
   $("wishModal").classList.add("open");
 }
-$("addBtn").onclick = () => openForm(null);
+$("addBtn").onclick = () => openForm(null, "wish");
+$("bfAdd").onclick = () => openForm(null, "bf");
 $("wishModal").querySelector("[data-close]").onclick = () => $("wishModal").classList.remove("open");
 
 // shrink the photo in the browser so the repo stays small
@@ -360,12 +417,75 @@ $("wishForm").file.onchange = async e => {
 };
 $("wishForm").image.oninput = e => { pendingPhoto = null; setPreview(e.target.value.trim()); };
 
+/* ---------- "+ wishlist" bookmark button ----------
+   Runs on the shop page you're looking at (so shops can't block it), reads the product
+   details and opens this wishlist with the add form already filled in. */
+function bookmarklet(T) {
+  var q = function (s) { var e = document.querySelector(s); return e ? (e.getAttribute("content") || e.textContent || "").trim() : ""; };
+  var find = function (n) {
+    if (!n || typeof n !== "object") return null;
+    if (Array.isArray(n)) { for (var i = 0; i < n.length; i++) { var r = find(n[i]); if (r) return r; } return null; }
+    var t = [].concat(n["@type"] || []);
+    if (t.some(function (x) { return /product/i.test(x); })) return n;
+    return find(n["@graph"]) || find(n.mainEntity) || null;
+  };
+  var P = null;
+  document.querySelectorAll('script[type="application/ld+json"]').forEach(function (s) { if (!P) { try { P = find(JSON.parse(s.textContent)); } catch (e) {} } });
+  if (P && P.hasVariant && !P.offers) P = Object.assign({}, [].concat(P.hasVariant)[0], { name: P.name, brand: P.brand, image: P.image || [].concat(P.hasVariant)[0].image });
+  var o = P && [].concat(P.offers || [])[0];
+  if (o && o.offers) o = [].concat(o.offers)[0];
+  var price = o ? (o.price != null ? o.price : o.lowPrice) : "", cur = o ? o.priceCurrency : "";
+  if (price == null || price === "") {
+    price = q('meta[property="product:price:amount"]') || q('meta[property="og:price:amount"]') || q("[itemprop=price]");
+    cur = cur || q('meta[property="product:price:currency"]') || q('meta[property="og:price:currency"]');
+  }
+  if (!price) { var m = (document.body.innerText || "").match(/€\s?\d{1,4}(?:[.,]\d{2})?|\d{1,4}(?:[.,]\d{2})?\s?€/); if (m) price = m[0]; }
+  var img = P && [].concat(P.image || [])[0];
+  if (img && typeof img === "object") img = img.url || img.contentUrl;
+  img = img || q('meta[property="og:image"]') || q('meta[name="twitter:image"]');
+  if (img) { try { img = new URL(img, location.href).href; } catch (e) {} }
+  var canon = document.querySelector('link[rel="canonical"]');
+  var brand = P && P.brand ? (typeof P.brand === "string" ? P.brand : P.brand.name) : "";
+  var d = {
+    link: (canon && canon.href) || location.href.split("#")[0],
+    name: (P && P.name) || q('meta[property="og:title"]') || document.title,
+    store: brand || q('meta[property="og:site_name"]') || "",
+    price: String(price || ""), cur: cur || "", image: img || ""
+  };
+  window.open(T + "#add=" + encodeURIComponent(JSON.stringify(d)), "_blank");
+}
+(() => {
+  const bm = $("bm"), target = location.origin + location.pathname;
+  bm.href = "javascript:" + encodeURIComponent(`(${bookmarklet.toString()})(${JSON.stringify(target)})`);
+  bm.onclick = e => { e.preventDefault(); toast("Drag me into your bookmarks bar ↑"); };
+})();
+
+let pendingAdd = null;
+if (location.hash.startsWith("#add=")) {
+  try { pendingAdd = JSON.parse(decodeURIComponent(location.hash.slice(5))); } catch (e) {}
+  store.set(LS.edit, "1");
+  history.replaceState(null, "", location.pathname);
+  document.body.classList.add("editing");
+}
+function openPendingAdd() {
+  if (!pendingAdd) return;
+  const d = pendingAdd; pendingAdd = null;
+  openForm(null, "wish");
+  const f = $("wishForm");
+  const store_ = d.store || prettyHost(d.link);
+  const vals = { link: d.link, name: cleanTitle(d.name, store_), store: store_, price: /\d/.test(d.price) ? fmtPrice(d.price, d.cur) : "", image: d.image };
+  for (const k in vals) if (vals[k]) { f[k].value = String(vals[k]).slice(0, 300); if (k !== "link") autoFilled.add(k); }
+  lastLooked = d.link || "";
+  setPreview(vals.image);
+  const missing = ["name", "price", "image"].filter(k => !vals[k]).map(k => k === "image" ? "pic" : k);
+  setLookup(missing.length ? `Couldn't find the ${missing.join(", ")} — add it` : "Filled in from the shop — check & edit", missing.length ? "" : "ok");
+}
+
 /* ---------- paste a link → auto-fill ---------- */
 // Shops don't let other websites read their pages directly, so the page goes through
 // public "proxy" services. Works for most shops; some (that build pages with JS or block bots) won't.
 const PROXIES = [
   u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
   u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
 ];
 let autoFilled = new Set(), lastLooked = "", lookupRun = 0;
@@ -380,6 +500,11 @@ function fmtPrice(amount, cur) {
   const num = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(".", ",");
   const sym = CUR[(cur || "").toUpperCase()];
   return sym ? sym + num : (cur ? `${num} ${cur}` : "€" + num);
+}
+
+function cleanTitle(name, site) {
+  // drop "| Zara" / "- H&M DE" style endings
+  return String(name || "").replace(/\s*[|–—-]\s*[^|–—-]{2,40}$/, m => (site && m.toLowerCase().includes(site.toLowerCase().split(" ")[0])) || /shop|store|online|kaufen/i.test(m) ? "" : m).trim();
 }
 
 function prettyHost(url) {
@@ -421,7 +546,7 @@ function parseHtml(html, url) {
   let name = (product && product.name) || meta("og:title", "twitter:title") || (doc.title || "");
   const site = meta("og:site_name") || brand || prettyHost(url);
   // drop "| Zara" / "- H&M DE" style endings
-  name = name.replace(/\s*[|–—-]\s*[^|–—-]{2,40}$/, m => (site && m.toLowerCase().includes(site.toLowerCase().split(" ")[0])) || /shop|store|online|kaufen/i.test(m) ? "" : m).trim();
+  name = cleanTitle(name, site);
 
   let image = (img && (typeof img === "string" ? img : img.url)) || meta("og:image", "og:image:url", "twitter:image");
   if (image) { try { image = new URL(image, url).href; } catch (e) {} }
@@ -512,7 +637,7 @@ $("wishForm").onsubmit = async e => {
     const data = {
       name: f.name.value.trim(), store: f.store.value.trim(), price: f.price.value.trim(),
       link: f.link.value.trim(), image,
-      category: f.category.value.trim().toLowerCase(), note: f.note.value.trim(), dream: f.dream.checked
+      category: f.category.value.trim().toLowerCase(), note: f.note.value.trim(), dream: f.dream.checked, list: f.list.value
     };
     btn.textContent = "Saving…";
     if (editingId) {
@@ -543,44 +668,70 @@ function imgSrc(src) {
   if (/^images\//.test(src) && editing() && store.get(LS.repo)) return `https://raw.githubusercontent.com/${store.get(LS.repo)}/HEAD/${src}`;
   return src;
 }
-function render() { renderFilters(); renderGrid(); }
+const isBF = i => i.list === "bf";
+function render() { renderFilters(); renderGrid(); renderBF(); }
 
 function renderFilters() {
-  const cats = ["all", ...new Set(ITEMS.map(i => i.category).filter(Boolean))];
+  const wishes = ITEMS.filter(i => !isBF(i));
+  const cats = ["all", ...new Set(wishes.map(i => i.category).filter(Boolean))];
   if (!cats.includes(active)) active = "all";
   filters.innerHTML = cats.map(c => `<button class="chip ${c === active ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")
     + `<span class="count" id="count"></span>`;
   filters.querySelectorAll(".chip").forEach(b => b.onclick = () => { active = b.dataset.cat; render(); });
 }
 
+const sortItems = l => l.sort((a, b) => (a.got - b.got) || (b.dream - a.dream));
+const plural = n => `${n} item${n === 1 ? "" : "s"}`;
+
 function renderGrid() {
-  const list = ITEMS.filter(i => active === "all" || i.category === active)
-    .sort((a, b) => (a.got - b.got) || (b.dream - a.dream));
-  $("count").textContent = `${list.length} item${list.length === 1 ? "" : "s"}`;
-  if (!list.length) { grid.innerHTML = `<div class="empty">nothing here yet</div>`; return; }
-  grid.innerHTML = list.map((i, n) => `
+  const list = sortItems(ITEMS.filter(i => !isBF(i) && (active === "all" || i.category === active)));
+  $("count").textContent = plural(list.length);
+  fillGrid(grid, list, false);
+}
+
+function renderBF() {
+  const list = sortItems(ITEMS.filter(isBF));
+  $("bfCount").textContent = plural(list.length);
+  // Black Friday = day after the 4th Thursday of November
+  const now = new Date(), y = now.getFullYear();
+  const bfDate = yr => { const d = new Date(yr, 10, 1); const firstThu = (11 - d.getDay()) % 7 + 1; return new Date(yr, 10, firstThu + 21 + 1); };
+  let target = bfDate(y);
+  const today = new Date(y, now.getMonth(), now.getDate());
+  if (today > target) target = bfDate(y + 1);
+  const days = Math.round((target - today) / 864e5);
+  $("bfDate").textContent = target.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  $("bfDays").textContent = days === 0 ? "TODAY" : days;
+  $("bfDaysLabel").textContent = days === 0 ? "go go go" : days === 1 ? "day to go" : "days to go";
+  // hide the whole section for visitors when it's empty
+  $("bf").style.display = list.length || editing() ? "" : "none";
+  fillGrid($("bfGrid"), list, true);
+}
+
+function fillGrid(el, list, bf) {
+  if (!list.length) { el.innerHTML = `<div class="empty">${bf ? "cart's empty" : "nothing here yet"}</div>`; return; }
+  el.innerHTML = list.map((i, n) => `
     <a class="card" href="${esc(i.link || "#")}" target="_blank" rel="noopener">
       <div class="pic ${i.got ? "got" : ""}">
         ${i.image ? `<img src="${esc(imgSrc(i.image))}" alt="${esc(i.name)}" loading="lazy" data-fallback="${esc(i.name)}">`
                   : `<div class="fallback">${esc(i.name)}</div>`}
         <span class="num">${String(n + 1).padStart(2, "0")}</span>
-        ${i.dream && !i.got ? `<span class="dream">dream ♡</span>` : ""}
+        ${i.dream && !i.got ? `<span class="dream">${bf ? "must have" : "dream ♡"}</span>` : ""}
       </div>
       <div class="meta"><span>${esc(i.store)}</span><span class="price">${esc(i.price)}</span></div>
       <div class="name">${esc(i.name)}</div>
       ${i.note ? `<p class="note">${esc(i.note)}</p>` : ""}
-      <span class="go">${i.got ? "already have it" : "get it →"}</span>
+      <span class="go">${i.got ? (bf ? "bought" : "already have it") : (bf ? "view →" : "get it →")}</span>
       <div class="tools">
         <button class="tool" data-act="edit" data-id="${esc(i.id)}">edit</button>
-        <button class="tool" data-act="got" data-id="${esc(i.id)}">${i.got ? "undo got it" : "got it ✓"}</button>
+        <button class="tool" data-act="got" data-id="${esc(i.id)}">${i.got ? "undo" : bf ? "bought ✓" : "got it ✓"}</button>
         <button class="tool del" data-act="del" data-id="${esc(i.id)}">remove</button>
       </div>
     </a>`).join("");
 
-  grid.querySelectorAll("img[data-fallback]").forEach(img => img.onerror = () => {
+  el.querySelectorAll("img[data-fallback]").forEach(img => img.onerror = () => {
     const d = document.createElement("div"); d.className = "fallback"; d.textContent = img.dataset.fallback; img.replaceWith(d);
   });
-  grid.querySelectorAll(".tool").forEach(b => b.onclick = e => {
+  el.querySelectorAll(".tool").forEach(b => b.onclick = e => {
     e.preventDefault(); e.stopPropagation();
     const a = b.dataset.act, id = b.dataset.id;
     if (a === "edit") openForm(ITEMS.find(i => i.id === id));
@@ -608,6 +759,7 @@ $("share").onclick = async () => {
     }
   } catch (e) { ITEMS = []; }
   render();
+  openPendingAdd();
 })();
 </script>
 </body>
