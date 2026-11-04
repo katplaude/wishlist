@@ -1,5 +1,17 @@
 [
   {
+    "id": "wmw1xicbw",
+    "name": "Cashmere Scarf",
+    "store": "Uniqlo",
+    "price": "60€",
+    "link": "https://www.uniqlo.com/de/en/products/E486760-000/00?colorDisplayCode=09&sizeDisplayCode=999",
+    "image": "https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/486760/item/goods_09_486760_3x4.jpg?width=400",
+    "category": "",
+    "note": "i need one good",
+    "dream": false,
+    "got": false
+  },
+  {
     "id": "wmw1xbuni",
     "name": "BELTED WOOL-BLEND FUNNEL-NECK COAT",
     "store": "Cos",
